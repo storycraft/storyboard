@@ -1,0 +1,8 @@
+[package]
+name = "storyboard"
+description = "Visual novel engine"
+version = "0.1.0"
+edition = "2021"
+authors = ["storycraft <storycraft@pancake.sh>"]
+license = "Apache-2.0"
+[dependencies]
