@@ -1,0 +1,11 @@
+[package]
+name = "xtask"
+description = "storyboard build system"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+publish = false
+
+[dependencies]
+clap = { version = "4.3.12", features = ["derive"] }

@@ -1,8 +1,22 @@
-[package]
-name = "storyboard"
-description = "Visual novel engine"
+[workspace]
+members = [
+    "storyboard",
+    "xtask",
+]
+
+[workspace.package]
 version = "0.1.0"
 edition = "2021"
 authors = ["storycraft <storycraft@pancake.sh>"]
+description = "Adv game script engine"
 license = "Apache-2.0"
-[dependencies]
+
+[workspace.dependencies]
+v8 = "0.74.1"
+spx = "0.5.0"
+spx-codegen = "0.5.0"
+deno_core = "0.195.0"
+deno_runtime = "0.119.0"
+
+[profile.release]
+strip = true
