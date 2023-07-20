@@ -1,6 +1,8 @@
 [workspace]
 members = [
     "storyboard",
+    "ext/*",
+
     "xtask",
 ]
 

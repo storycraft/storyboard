@@ -1,0 +1,11 @@
+[package]
+name = "storyboard-spx"
+version.workspace = true
+edition.workspace = true
+description.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+deno_core = { workspace = true }
+spx = { workspace = true }
