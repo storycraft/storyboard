@@ -4,7 +4,7 @@
  * Copyright (c) storycraft. Licensed under the Apache Licence 2.0.
  */
 
-pub mod modules;
+pub mod module_loader;
 pub mod spx;
 
 use std::{env, error::Error, rc::Rc, sync::Arc};
@@ -15,8 +15,9 @@ use deno_core::ModuleSpecifier;
 use deno_runtime::{
     permissions::PermissionsContainer,
     worker::{MainWorker, WorkerOptions},
+    BootstrapOptions,
 };
-use modules::ModuleLoader;
+use module_loader::ModuleLoader;
 
 const RESOURCE_MAP: FileMap = include!(concat!(env!("OUT_DIR"), "/resource_map"));
 
@@ -37,6 +38,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
         main_module.clone(),
         PermissionsContainer::allow_all(),
         WorkerOptions {
+            extensions: vec![],
+            bootstrap: create_boot_strap_options(),
             module_loader: Rc::new(ModuleLoader::new(storage_system.clone())),
             ..Default::default()
         },
@@ -46,4 +49,12 @@ async fn main() -> Result<(), Box<dyn Error>> {
     worker.run_event_loop(false).await?;
 
     Ok(())
+}
+
+fn create_boot_strap_options() -> BootstrapOptions {
+    BootstrapOptions {
+        user_agent: format!("{}/{}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION")),
+
+        ..Default::default()
+    }
 }

@@ -7,10 +7,9 @@
 use std::{future::Future, pin::Pin, sync::Arc};
 
 use deno_core::{
-    error::{generic_error, AnyError},
+    error::{bad_resource, AnyError},
     futures::{future::ready, AsyncReadExt},
-    FsModuleLoader, ModuleSource, ModuleSourceFuture, ModuleSpecifier, ModuleType,
-    ResolutionKind,
+    FsModuleLoader, ModuleSource, ModuleSourceFuture, ModuleSpecifier, ModuleType, ResolutionKind,
 };
 use relative_path::RelativePath;
 
@@ -18,24 +17,24 @@ use crate::spx::SpxStorageSystem;
 
 #[derive(Debug)]
 pub struct ModuleLoader {
-    storage: Arc<SpxStorageSystem>,
+    spx: Arc<SpxStorageSystem>,
 }
 
 impl ModuleLoader {
-    pub const fn new(storage: Arc<SpxStorageSystem>) -> Self {
-        Self { storage }
+    pub const fn new(spx: Arc<SpxStorageSystem>) -> Self {
+        Self { spx }
     }
 
     fn load_spx(
         &self,
         module_specifier: ModuleSpecifier,
     ) -> impl Future<Output = Result<ModuleSource, AnyError>> {
-        let storage = self.storage.clone();
+        let storage = self.spx.clone();
 
         async move {
             let path = module_specifier
                 .domain()
-                .ok_or_else(|| generic_error("Spx archive name is not specified"))?;
+                .ok_or_else(|| bad_resource("Spx archive name is not specified"))?;
 
             let file_name = {
                 let path = module_specifier.path();
@@ -83,7 +82,7 @@ impl deno_core::ModuleLoader for ModuleLoader {
 
             "spx" => Box::pin(self.load_spx(module_specifier.clone())),
 
-            scheme => Box::pin(ready(Err(generic_error(format!(
+            scheme => Box::pin(ready(Err(bad_resource(format!(
                 "Unknown scheme {}",
                 scheme
             ))))),
