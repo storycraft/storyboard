@@ -1,2 +1,5 @@
 /target
 /Cargo.lock
+
+# xtask build directory
+/dist
