@@ -8,4 +8,6 @@ license.workspace = true
 publish = false
 
 [dependencies]
+spx-codegen = { workspace = true }
+
 clap = { version = "4.3.12", features = ["derive"] }

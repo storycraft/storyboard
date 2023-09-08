@@ -19,7 +19,7 @@ use deno_runtime::{
 };
 use module_loader::ModuleLoader;
 
-const RESOURCE_MAP: FileMap = include!(concat!(env!("OUT_DIR"), "/resource_map"));
+const RESOURCE_MAP: FileMap = include!(env!("STORYBOARD_RESOURCE_MAP"));
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -29,17 +29,16 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let storage_system = SpxStorageSystemBuilder::new()
         .add("resources.spx".into(), RESOURCE_MAP)
         .build(executable_dir);
-
     let storage_system = Arc::new(storage_system);
 
-    let main_module = ModuleSpecifier::parse("spx://resources.spx/main.js").unwrap();
+    let main_module = ModuleSpecifier::parse(env!("STORYBOARD_ENTRYPOINT")).unwrap();
 
     let mut worker = MainWorker::bootstrap_from_options(
         main_module.clone(),
         PermissionsContainer::allow_all(),
         WorkerOptions {
             extensions: vec![],
-            bootstrap: create_boot_strap_options(),
+            bootstrap: create_bootstrap_options(),
             module_loader: Rc::new(ModuleLoader::new(storage_system.clone())),
             ..Default::default()
         },
@@ -51,7 +50,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn create_boot_strap_options() -> BootstrapOptions {
+fn create_bootstrap_options() -> BootstrapOptions {
     BootstrapOptions {
         user_agent: format!("{}/{}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION")),
 
